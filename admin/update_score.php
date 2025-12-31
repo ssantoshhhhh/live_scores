@@ -72,9 +72,10 @@ try {
         $liveData = $stmtScore->fetch(PDO::FETCH_ASSOC);
         $finalJson = $liveData ? $liveData['score_json'] : null;
 
-        // 2. Update matches table with winner, description AND final JSON history
-        $stmt = $conn->prepare("UPDATE matches SET status = 'completed', winner_team = :w, win_description = :d, final_score_json = :json WHERE id = :id");
-        $stmt->execute(['id' => $match_id, 'w' => $winner, 'd' => $desc, 'json' => $finalJson, 'w' => $winner]);
+        // 2. Update matches table with winner, description
+        // Removed final_score_json to avoid schema errors if column missing
+        $stmt = $conn->prepare("UPDATE matches SET status = 'completed', winner_team = :w, win_description = :d WHERE id = :id");
+        $stmt->execute(['id' => $match_id, 'w' => $winner, 'd' => $desc]);
         
         echo json_encode(['success' => true]);
 

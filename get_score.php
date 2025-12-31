@@ -12,10 +12,10 @@ if (!$game_type) {
 try {
     // Fetch the active match for this game type
     $stmt = $conn->prepare("
-        SELECT m.id, m.team1_name, m.team2_name, m.team1_color, m.team2_color, m.status, ls.score_json 
+        SELECT m.id, m.team1_name, m.team2_name, m.team1_color, m.team2_color, m.status, m.winner_team, m.win_description, ls.score_json 
         FROM matches m 
         LEFT JOIN live_scores ls ON m.id = ls.match_id 
-        WHERE m.game_type = :game AND m.status != 'completed' 
+        WHERE m.game_type = :game 
         ORDER BY CASE WHEN m.status = 'live' THEN 1 ELSE 2 END ASC, m.id DESC LIMIT 1
     ");
     

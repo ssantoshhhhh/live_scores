@@ -203,6 +203,11 @@
     <!-- Background Flash -->
     <div id="anim-bg-flash" class="position-absolute w-100 h-100 bg-white" style="opacity: 0; pointer-events: none;"></div>
 
+    <!-- Close Button (Visible only for persistent animations) -->
+    <button id="anim-close-btn" class="btn btn-outline-light position-absolute top-0 end-0 m-4 rounded-circle d-none" style="z-index: 3600; width: 50px; height: 50px;" onclick="closeAnimation()">
+        <i class="fas fa-times"></i>
+    </button>
+
     <div id="anim-content" class="text-center position-relative p-5" style="transform: perspective(1000px) rotateX(10deg) scale(0.5); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         
         <!-- Text Container -->
@@ -256,11 +261,25 @@
     
     .type-all-out { color: #dc3545; } /* Danger Red */
     .type-all-out #anim-bar { background-color: #dc3545; color: #dc3545; }
+
+    .type-winner { color: #ffd700; text-shadow: 0 0 50px #ffd700; } /* Gold */
+    .type-winner #anim-bar { background-color: #ffd700; box-shadow: 0 0 30px #ffd700; }
+    
+    /* Mobile Responsive Animation */
+    @media (max-width: 768px) {
+        #anim-text { font-size: 4rem !important; -webkit-text-stroke: 1px black !important; }
+        #anim-team { font-size: 2.5rem !important; transform: translateY(10px); }
+        #anim-content { padding: 1rem !important; width: 95%; }
+        .match-card { margin-bottom: 1rem; }
+    }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
     let lastAnimId = 0;
     let isFirstPoll = true;
+    let lastStatus = '';
+    let winnerShown = false;
 
     function updateScore() {
         fetch('get_score.php?game=kabaddi')
@@ -281,7 +300,48 @@
                     renderPlayers('t1-players-container', scores.t1_players !== undefined ? scores.t1_players : 7);
                     renderPlayers('t2-players-container', scores.t2_players !== undefined ? scores.t2_players : 7);
                     
-                    document.getElementById('match-status-text').innerText = "Status: " + data.match_info.status;
+                    // Check Completion
+                    if(data.match_info.status === 'completed') {
+                         if(!winnerShown) {
+                              let wTeam = data.match_info.winner_team;
+                              const desc = data.match_info.win_description || "";
+
+                              // FAILSAFE: Calculate winner locally from scores if not explicitly provided
+                              if (!wTeam) {
+                                  const s1 = parseInt(scores.t1_points || 0);
+                                  const s2 = parseInt(scores.t2_points || 0);
+                                  const t1Name = data.match_info.team1;
+                                  const t2Name = data.match_info.team2;
+                                  
+                                  if (s1 > s2) wTeam = t1Name;
+                                  else if (s2 > s1) wTeam = t2Name;
+                                  // else it remains null (Draw)
+                              }
+
+                              // Secondary Fallback: Try description
+                              if (!wTeam && desc.includes(' won by ')) {
+                                  wTeam = desc.split(' won by ')[0];
+                              }
+
+                              if (wTeam) {
+                                  triggerVisualAnimation(wTeam, 'WINNER', 0);
+                              } else {
+                                  triggerVisualAnimation('MATCH DRAWN', '', 0);
+                              }
+                              winnerShown = true;
+                         }
+                         document.getElementById('match-status-text').innerText = "Result: " + (data.match_info.win_description || "Match Completed");
+                         document.getElementById('match-status-text').className = "fw-bold text-success display-6 mt-3";
+                    } else {
+                         if(winnerShown) {
+                             // Match restarted or new match
+                             document.getElementById('animation-overlay').classList.add('d-none');
+                             winnerShown = false;
+                         }
+                         document.getElementById('match-status-text').innerText = "Status: " + data.match_info.status;
+                         document.getElementById('match-status-text').className = "";
+                    }
+                    lastStatus = data.match_info.status;
 
                     // Timeout
                     const timeoutOverlay = document.getElementById('timeout-overlay');
@@ -334,7 +394,7 @@
             .catch(err => console.error('Error fetching score:', err));
     }
 
-    function triggerVisualAnimation(text, teamName) {
+    function triggerVisualAnimation(text, teamName, duration = 4000) {
         const overlay = document.getElementById('animation-overlay');
         const content = document.getElementById('anim-content');
         const bgFlash = document.getElementById('anim-bg-flash');
@@ -349,9 +409,41 @@
         // Determine Type Class
         let typeClass = 'type-super-raid'; // Default
         const lowerText = text.toLowerCase();
+        const lowerTeam = teamName.toLowerCase();
         
         if (lowerText.includes('tackle')) typeClass = 'type-super-tackle';
         else if (lowerText.includes('all out')) typeClass = 'type-all-out';
+        else if (lowerText.includes('winner') || lowerTeam.includes('winner')) {
+            typeClass = 'type-winner';
+            // Trigger Confetti Celebration for Winner
+            if(window.confetti) {
+                const duration = 5000;
+                const end = Date.now() + duration;
+                
+                (function frame() {
+                    confetti({
+                        particleCount: 5,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffd700'],
+                        zIndex: 3500
+                    });
+                    confetti({
+                        particleCount: 5,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffd700'],
+                        zIndex: 3500
+                    });
+                
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+            }
+        }
         
         content.classList.add(typeClass);
         
@@ -361,6 +453,14 @@
         
         // Show Overlay
         overlay.classList.remove('d-none');
+
+        // Show Close Button if persistent
+        const closeBtn = document.getElementById('anim-close-btn');
+        if (duration === 0) {
+            closeBtn.classList.remove('d-none');
+        } else {
+            closeBtn.classList.add('d-none');
+        }
         
         // --- ANIMATION SEQUENCE ---
         
@@ -385,22 +485,40 @@
              }, 300);
         }, 100);
 
-        // 4. Exit
-        setTimeout(() => {
-            content.classList.remove('anim-active');
-            content.classList.add('anim-exit');
-            
+        // 4. Exit (Only if duration > 0)
+        if (duration > 0) {
             setTimeout(() => {
-                overlay.classList.add('d-none');
-                
-                // Cleanup
-                content.style.opacity = '0';
-                content.classList.remove(typeClass);
-                bar.style.width = '0';
-                tm.style.opacity = '0';
-                tm.style.transform = 'translateY(20px)';
-            }, 400); // Wait for exit anim
-        }, 4000); // Display Duration
+                closeAnimation();
+            }, duration); // Display Duration
+        }
+    }
+
+    function closeAnimation() {
+        const overlay = document.getElementById('animation-overlay');
+        const content = document.getElementById('anim-content');
+        const tm = document.getElementById('anim-team');
+        const bar = document.getElementById('anim-bar');
+        const closeBtn = document.getElementById('anim-close-btn');
+
+        content.classList.remove('anim-active');
+        content.classList.add('anim-exit');
+        
+        setTimeout(() => {
+            overlay.classList.add('d-none');
+            closeBtn.classList.add('d-none');
+            
+            // Cleanup
+            content.style.opacity = '0';
+            content.classList.remove('type-winner', 'type-super-raid', 'type-super-tackle', 'type-all-out');
+            bar.style.width = '0';
+            tm.style.opacity = '0';
+            tm.style.transform = 'translateY(20px)';
+            
+            // Stop Confetti if running (by clearing canvas usually, but here we just let it fall)
+            if(window.confetti && typeof window.confetti.reset === 'function') {
+                window.confetti.reset();
+            }
+        }, 400);
     }
 
     function renderPlayers(containerId, activeCount) {

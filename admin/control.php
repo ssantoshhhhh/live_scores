@@ -424,7 +424,7 @@ if($allowed !== 'all' && $allowed !== $game) {
         fetch(`../get_score.php?game=${GAME_TYPE}`)
         .then(r => r.json())
         .then(data => {
-            if(data.success && data.match_info) {
+            if(data.success && data.match_info && data.match_info.status === 'live') {
                 // Found a live match!
                 console.log("Restoring match:", data);
                 
@@ -580,8 +580,11 @@ if($allowed !== 'all' && $allowed !== $game) {
         
         // Update Score based on Game Type
         if(GAME_TYPE === 'kabaddi') {
-            if(team === 't1') state.t1_points += points;
-            else state.t2_points += points;
+            if(team === 't1') {
+                state.t1_points = parseInt(state.t1_points || 0) + points;
+            } else {
+                state.t2_points = parseInt(state.t2_points || 0) + points;
+            }
         } else if (GAME_TYPE === 'pickleball' || GAME_TYPE === 'volleyball') {
              if(team === 't1') state.current_points_t1 = (state.current_points_t1 || 0) + points;
              else state.current_points_t2 = (state.current_points_t2 || 0) + points;
@@ -651,13 +654,13 @@ if($allowed !== 'all' && $allowed !== $game) {
         let winner = null;
         let desc = "Match Drawn";
         
-        let s1 = state.t1_points || 0;
-        let s2 = state.t2_points || 0;
+        let s1 = parseInt(state.t1_points || 0);
+        let s2 = parseInt(state.t2_points || 0);
         
         // Handle tennis/sets
         if(GAME_TYPE === 'tennis' || GAME_TYPE === 'volleyball' || GAME_TYPE === 'pickleball') {
-             s1 = state.sets_won_t1 || 0;
-             s2 = state.sets_won_t2 || 0;
+             s1 = parseInt(state.sets_won_t1 || 0);
+             s2 = parseInt(state.sets_won_t2 || 0);
         }
 
         const t1 = document.getElementById('lbl-t1').innerText;
@@ -666,14 +669,22 @@ if($allowed !== 'all' && $allowed !== $game) {
         if (s1 > s2) {
             winner = t1;
             desc = `${t1} won by ${s1 - s2} point(s)/set(s)`;
+            console.log("Winner T1:", winner);
         } else if (s2 > s1) {
             winner = t2;
             desc = `${t2} won by ${s2 - s1} point(s)/set(s)`;
+            console.log("Winner T2:", winner);
+        } else {
+            console.log("Draw:", s1, s2);
         }
+        
+        let confirmMsg = `End Match?\n\nResult: ${desc}`;
+        if(winner) confirmMsg += `\nWinner: ${winner}`;
 
-        if(confirm(`End Match?\n\nResult: ${desc}`)) {
+        if(confirm(confirmMsg)) {
             fetch('update_score.php', {
                 method: 'POST',
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ 
                     action: 'end_match', 
                     match_id: matchId,
