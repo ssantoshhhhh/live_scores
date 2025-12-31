@@ -1,0 +1,392 @@
+:root {
+    --bg-body: #f8f9fa;
+    /* White/Light Gray background */
+    --bg-card: #ffffff;
+    --primary-blue: #002147;
+    /* Deep Official Blue */
+    --primary-orange: #ff5500;
+    /* Vibrant Sports Orange */
+    --text-black: #000000;
+    --text-gray: #4b5563;
+    --border-color: #e5e7eb;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-black);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* NAVBAR - Official League Look */
+.navbar {
+    background-color: var(--primary-blue) !important;
+    border-bottom: 4px solid var(--primary-orange);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.5rem;
+}
+
+/* CARDS - Official Content Blocks */
+.glass-card,
+.card {
+    background: var(--bg-card);
+    border: none;
+    border-radius: 0;
+    /* Square corners for professional look */
+    border-top: 3px solid var(--primary-blue);
+    /* Blue accent top */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    /* Clean shadow */
+    margin-bottom: 1.5rem;
+}
+
+/* SCOREBOARD CONTAINER - Match Center Style */
+.scoreboard-container {
+    max-width: 1200px;
+    margin: -3rem auto 2rem auto;
+    /* Overlap navbar slightly */
+    position: relative;
+    z-index: 10;
+}
+
+/* Score Cards Specifics */
+.theme-kabaddi .glass-card {
+    border-top-color: var(--primary-orange);
+    /* Orange accent for Live Game */
+    padding: 3rem 2rem !important;
+}
+
+.score-big {
+    color: var(--text-black);
+    font-family: 'Oswald', sans-serif;
+    /* Condensed strong font if avail, fallback sans */
+    font-weight: 700;
+    font-size: 5rem;
+}
+
+.team-name {
+    color: var(--primary-blue);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 1.75rem;
+}
+
+/* VS Badge & Timer */
+.vs-badge {
+    color: #cbd5e1;
+    font-style: italic;
+    font-weight: 900;
+    font-size: 2rem;
+}
+
+#match-timer {
+    font-family: monospace;
+    font-size: 1.25rem;
+    color: var(--primary-orange);
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+}
+
+/* INPUTS & CONTROLS */
+.form-control,
+.form-select {
+    border-radius: 0;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 0.25rem rgba(255, 85, 0, 0.25);
+}
+
+/* BUTTONS */
+.btn {
+    border-radius: 2px;
+    /* Slight round but mostly square */
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: #00152e;
+}
+
+.btn-warning,
+.btn-create {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #cc4400;
+    color: white;
+}
+
+/* Active Raider - Outline Orange */
+.active-raider-btn {
+    background-color: #fff !important;
+    border: 3px solid var(--primary-orange) !important;
+    color: var(--primary-orange) !important;
+    box-shadow: inset 0 0 10px rgba(255, 85, 0, 0.1);
+}
+
+/* Badges */
+.badge {
+    border-radius: 2px;
+}
+
+.badge.bg-secondary {
+    background: #e9ecef !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6;
+}
+
+/* Match Lists Styling */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 1rem 1.25rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Titles */
+h1,
+h2,
+h3,
+h4 {
+    color: var(--primary-blue);
+    font-weight: 800;
+}
+
+h4.text-white {
+    color: var(--primary-blue) !important;
+}
+
+/* Override previous white text classes on light bg */
+.text-white {
+    color: var(--text-black) !important;
+}
+
+/* General override for content */
+.bg-dark {
+    background-color: white !important;
+}
+
+/* Override dark backgrounds to white */
+
+/* Specific fix for Navbar text which SHOULD be white */
+.navbar .text-white,
+.navbar .navbar-brand {
+    color: #ffffff !important;
+}
+
+.navbar .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.navbar .btn-outline-light:hover {
+    background: white;
+    color: var(--primary-blue);
+}
+
+/* Fix Time/Date Text */
+.text-secondary {
+    color: var(--text-gray) !important;
+}
+
+/* Timeout Overlay */
+#timeout-overlay {
+    background: rgba(0, 33, 71, 0.95) !important;
+    /* Blue overlay */
+}
+
+#timeout-overlay h1 {
+    color: var(--primary-orange) !important;
+}
+
+#timeout-overlay .spinner-grow {
+    color: white !important;
+}
+
+/* Player Icons */
+.fa-user.text-white {
+    color: var(--primary-blue) !important;
+}
+
+/* Active players blue */
+.fa-user.text-danger {
+    color: #dc3545 !important;
+    opacity: 0.3 !important;
+}
+
+/* Out players red *//* Player Icons */
+.fa-user.text-white {
+  color: var(--primary-blue) !important;
+}
+
+/* Active players blue */
+.fa-user.text-danger {
+  color: #dc3545 !important;
+  opacity: 0.3 !important;
+}
+
+/* Out players red */
+
+/* =========================================
+   DARK MODE
+   ========================================= */
+body.dark-mode {
+  --bg-body: #0b1120;
+  --bg-card: #1e293b;
+  --text-black: #f8fafc;
+  --text-gray: #94a3b8;
+  --border-color: #334155;
+  --primary-blue: #3b82f6;
+  /* Lighter blue for dark mode visibility */
+}
+
+body.dark-mode .navbar {
+  background-color: #0f172a !important;
+  border-bottom-color: var(--primary-orange);
+}
+
+body.dark-mode .glass-card,
+body.dark-mode .card {
+  border-color: var(--border-color);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .score-big {
+  color: #f8fafc;
+  /* White numbers in dark mode */
+}
+
+body.dark-mode .team-name {
+  color: var(--primary-blue);
+}
+
+body.dark-mode .list-group-item {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-black) !important;
+}
+
+body.dark-mode .bg-dark {
+  background-color: #334155 !important;
+  color: white !important;
+}
+
+body.dark-mode .text-white {
+  color: #f8fafc !important;
+}
+
+body.dark-mode .btn-outline-light {
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+body.dark-mode .btn-outline-light:hover {
+  background-color: #334155;
+  color: white;
+}
+
+body.dark-mode .fa-user.text-white {
+  color: #60a5fa !important;
+}
+
+/* Lighter blue icon */
+body.dark-mode #match-timer {
+  background: #0f172a;
+  border-color: #334155;
+  color: var(--primary-orange);
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* =========================================
+   RESPONSIVE MOBILE
+   ========================================= */
+@media (max-width: 768px) {
+  .score-big {
+    font-size: 3.5rem;
+  }
+
+  .team-name {
+    font-size: 1.2rem;
+  }
+
+  .scoreboard-container {
+    margin-top: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .glass-card {
+    padding: 1.5rem !important;
+  }
+
+  .vs-badge {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    display: block;
+  }
+
+  /* Stack the layout on mobile */
+  .row.align-items-center {
+    flex-direction: column;
+  }
+
+  /* Order: Team 1 (top), VS/Timer (middle), Team 2 (bottom) 
+       Bootstrap order classes can be used in HTML, but here we enforce stacking.
+    */
+  .col-md-2.text-center.mb-4 {
+    order: -1;
+    /* Timer mostly at top or between? Usually between in design but row-reverse/column-reverse might be tricky. 
+                      Let's keep standard stacking: T1, VS, T2 is fine. */
+    margin-bottom: 1rem !important;
+    margin-top: -1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .control-btn {
+    height: 60px;
+    font-size: 1rem;
+  }
+
+  /* Adjust buttons grid in admin */
+  .d-flex.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  .btn-create {
+    width: 100%;
+  }
+}
