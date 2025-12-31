@@ -150,29 +150,23 @@
 <!-- TIMEOUT OVERLAY -->
 <!-- TIMEOUT OVERLAY -->
 <div id="timeout-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-none d-flex flex-column align-items-center justify-content-center" style="background: rgba(0,0,0,0.95); z-index: 2000;">
-    <h1 class="display-1 fw-bold text-warning mb-5" style="letter-spacing: 5px;">TIMEOUT</h1>
+    <h1 class="display-1 fw-bold text-warning mb-4" style="letter-spacing: 5px;">TIMEOUT</h1>
     
-    <!-- Timeout Scoreboard -->
-    <div class="container">
-        <div class="row align-items-center justify-content-center text-center">
-            <div class="col-5 text-end">
-                <h2 id="to-t1-name" class="text-white fw-bold mb-0 display-6">Team A</h2>
-            </div>
-            <div class="col-2">
-                <span class="display-4 fw-bold text-white">:</span>
-            </div>
-            <div class="col-5 text-start">
-                <h2 id="to-t2-name" class="text-white fw-bold mb-0 display-6">Team B</h2>
-            </div>
-            
-            <div class="col-5 text-end">
-                <div id="to-t1-score" class="display-1 fw-bold text-info" style="font-size: 6rem;">0</div>
-            </div>
-            <div class="col-2">
-            </div>
-            <div class="col-5 text-start">
-                <div id="to-t2-score" class="display-1 fw-bold text-info" style="font-size: 6rem;">0</div>
-            </div>
+    <!-- Timeout Scoreboard (Flexbox for alignment) -->
+    <div class="d-flex justify-content-center align-items-center w-100 gap-3 gap-md-5 px-3">
+        <!-- Team 1 -->
+        <div class="text-center" style="flex: 1; min-width: 0;">
+            <h2 id="to-t1-name" class="fw-bold text-white mb-2 text-truncate w-100 d-block" style="font-size: 2.5rem;">Team A</h2>
+            <div id="to-t1-score" class="fw-bold text-info" style="font-size: 6rem; line-height: 1;">0</div>
+        </div>
+
+        <!-- Divider -->
+        <div class="text-white opacity-50 pb-4" style="font-size: 4rem;">:</div>
+
+        <!-- Team 2 -->
+        <div class="text-center" style="flex: 1; min-width: 0;">
+            <h2 id="to-t2-name" class="fw-bold text-white mb-2 text-truncate w-100 d-block" style="font-size: 2.5rem;">Team B</h2>
+            <div id="to-t2-score" class="fw-bold text-info" style="font-size: 6rem; line-height: 1;">0</div>
         </div>
     </div>
 
@@ -271,6 +265,14 @@
         #anim-team { font-size: 2.5rem !important; transform: translateY(10px); }
         #anim-content { padding: 1rem !important; width: 95%; }
         .match-card { margin-bottom: 1rem; }
+        
+        /* Mobile Timeout Overlay */
+        #timeout-overlay h1.display-1 { font-size: 3rem !important; letter-spacing: 2px !important; margin-bottom: 1.5rem !important; }
+        #timeout-overlay #to-t1-name, 
+        #timeout-overlay #to-t2-name { font-size: 1.2rem !important; margin-bottom: 0.5rem !important; }
+        #timeout-overlay #to-t1-score, 
+        #timeout-overlay #to-t2-score { font-size: 3.5rem !important; }
+        #timeout-overlay .gap-md-5 { gap: 1rem !important; } /* Reduce gap */
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
