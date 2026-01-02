@@ -283,6 +283,8 @@
     let lastStatus = '';
     let winnerShown = false;
 
+    let prevScores = { t1: null, t2: null };
+
     function updateScore() {
         fetch('get_score.php?game=kabaddi')
             .then(response => response.json())
@@ -293,10 +295,16 @@
                     document.getElementById('team1-name').innerText = data.match_info.team1;
                     document.getElementById('team2-name').innerText = data.match_info.team2;
                     
-                    // Update Scores
+                    // Update Scores with Animation
                     const scores = data.scores || {};
-                    document.getElementById('team1-score').innerText = scores.t1_points || 0;
-                    document.getElementById('team2-score').innerText = scores.t2_points || 0;
+                    const t1_new = parseInt(scores.t1_points || 0);
+                    const t2_new = parseInt(scores.t2_points || 0);
+
+                    updateWithAnimation('team1-score', prevScores.t1, t1_new);
+                    updateWithAnimation('team2-score', prevScores.t2, t2_new);
+                    
+                    prevScores.t1 = t1_new;
+                    prevScores.t2 = t2_new;
                     
                     // Update Player Icons
                     renderPlayers('t1-players-container', scores.t1_players !== undefined ? scores.t1_players : 7);
@@ -573,6 +581,19 @@
             `;
             list.appendChild(li);
         });
+    }
+
+    function updateWithAnimation(elementId, oldVal, newVal) {
+        const el = document.getElementById(elementId);
+        if (oldVal !== null && newVal !== oldVal) {
+            el.innerText = newVal;
+            el.classList.remove('score-update');
+            void el.offsetWidth; // Trigger reflow
+            el.classList.add('score-update');
+        } else {
+             // Initial load or no change
+             el.innerText = newVal;
+        }
     }
 
     // Poll every 2 seconds
